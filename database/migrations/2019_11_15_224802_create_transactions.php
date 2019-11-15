@@ -15,8 +15,8 @@ class CreateTransactions extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('company_id');
-            $table->tinyInteger('payment_method_id');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedTinyInteger('payment_method_id');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies');
