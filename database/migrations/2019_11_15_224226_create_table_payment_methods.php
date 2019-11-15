@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableCompanies extends Migration
+class CreateTablePaymentMethods extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateTableCompanies extends Migration
      */
     public function up()
     {
-        Schema::create('companies', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
+        Schema::create('payment_methods', function (Blueprint $table) {
+            $table->tinyIncrements('id');
             $table->string('slug')->unique();
             $table->timestamps();
         });
@@ -28,6 +27,6 @@ class CreateTableCompanies extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('payment_methods');
     }
 }
