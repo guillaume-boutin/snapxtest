@@ -9,7 +9,12 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 class Header extends React.Component {
     render() {
         return (
-            <Navbar bg="primary" variant="dark" expand="lg">
+            <Navbar
+                className="component__Header"
+                bg="primary"
+                variant="dark"
+                expand="lg"
+            >
                 <Navbar.Brand href="#home">Snapx-Test</Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

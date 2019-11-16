@@ -4,20 +4,14 @@ import Header from '@/components/partials/Header';
 import Home from '@/components/pages/Home';
 import Transactions from '@/components/pages/Transactions';
 
-class MainLayout extends React.Component {
-    render() {
-        return (
-            <div id="main-layout">
-                <Header />
+const MainLayout = ({component, ...rest}) => {
+    return (
+        <div id="main-layout">
+            <Header />
 
-                <Switch>
-                    <Route exact path="/" component={Home} />
-
-                    <Route exact path="/transactions" component={Transactions} />
-                </Switch>
-            </div>
-        )
-    }
+            <Route {...rest} component={component} />
+        </div>
+    )
 }
 
 export default MainLayout;
