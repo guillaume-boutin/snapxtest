@@ -18,8 +18,9 @@ class CreateTransactions extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedTinyInteger('payment_method_id');
             $table->decimal('subtotal', 11, 2);
-            $table->decimal('tps', 11, 2);
-            $table->decimal('tvq', 11, 2);
+            $table->decimal('tps', 11, 2)->nullable()->default(null);
+            $table->decimal('tvq', 11, 2)->nullable()->default(null);
+            $table->date('date_of_purchase');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies');
