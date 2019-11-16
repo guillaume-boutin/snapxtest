@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 // import Hello from '@/components/Hello';
 import MainLayout from '@/components/layouts/MainLayout';
 

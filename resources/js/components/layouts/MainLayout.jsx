@@ -1,5 +1,8 @@
 import React from 'react'
+import { Route, Switch } from 'react-router-dom';
 import Header from '@/components/partials/Header';
+import Home from '@/components/pages/Home';
+import Transactions from '@/components/pages/Transactions';
 
 class MainLayout extends React.Component {
     render() {
@@ -7,7 +10,11 @@ class MainLayout extends React.Component {
             <div id="main-layout">
                 <Header />
 
-                <h1>Home Page</h1>
+                <Switch>
+                    <Route exact path="/" component={Home} />
+
+                    <Route exact path="/transactions" component={Transactions} />
+                </Switch>
             </div>
         )
     }
