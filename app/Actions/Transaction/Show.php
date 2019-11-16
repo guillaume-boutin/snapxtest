@@ -4,6 +4,7 @@ namespace App\Actions\Transaction;
 
 use App\Transaction;
 use Lorisleiva\Actions\Action;
+use App\Http\Resources\Transaction as TransactionResource;
 
 class Show extends Action
 {
@@ -35,5 +36,10 @@ class Show extends Action
     public function handle()
     {
         return Transaction::find($this->get('id'));
+    }
+
+    public function jsonResponse($result)
+    {
+        return response()->json(new TransactionResource($result), 200);
     }
 }

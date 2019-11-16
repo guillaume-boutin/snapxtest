@@ -39,24 +39,23 @@ class Index extends Action
             'company', 'payment_method'
         ]);
 
-        $where = [];
         if ($supplier = $this->get('supplier')) {
-            $where[] = ['company_id', '=', $supplier];
+            $query->where('company_id', '=', $supplier);
         }
 
         if ($purchasedSince = $this->get('purchased_since')) {
-            $where[] = ['date_of_purchase', '>=', $purchasedSince];
+            $query->where('date_of_purchase', '>=', $purchasedSince);
         }
 
         if ($purchasedUntil = $this->get('purchased_until')) {
-            $where[] = ['date_of_purchase', '<=', $purchasedUntil];
+            $query->where('date_of_purchase', '<=', $purchasedUntil);
         }
 
-        return $query->where($where)->get();
+        return $query->get();
     }
 
     public function jsonResponse($result, $request)
     {
-        return TransactionResource::collection($result);
+        return response()->json(TransactionResource::collection($result), 200);
     }
 }
