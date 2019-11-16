@@ -10,6 +10,10 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+// Get the backend api routes
+let $routeMetaTag = document.head.querySelector('meta[name="api-routes"]');
+window.API_ROUTES = JSON.parse($routeMetaTag.content);
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
