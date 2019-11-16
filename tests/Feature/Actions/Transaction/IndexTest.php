@@ -3,24 +3,12 @@
 namespace Tests\Feature\Actions\Transaction;
 
 use App\Company;
-use Carbon\Carbon;
-use DatabaseSeeder;
-use Tests\TestCase;
 use App\Transaction;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Actions\Transaction\Index as TransactionIndexAction;
+use Tests\Feature\Actions\AbstractActionTest;
 
-class IndexTest extends TestCase
+class IndexTest extends AbstractActionTest
 {
-    use RefreshDatabase;
-
-    protected function setUp() : void
-    {
-        parent::setUp();
-        app(DatabaseSeeder::class)->run();
-    }
-
     public function test_it_fetches_all_transactions()
     {
         $results = (new TransactionIndexAction())->run();
