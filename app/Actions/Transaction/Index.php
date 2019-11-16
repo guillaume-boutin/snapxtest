@@ -4,6 +4,7 @@ namespace App\Actions\Transaction;
 
 use App\Transaction;
 use Lorisleiva\Actions\Action;
+use App\Http\Resources\Transaction as TransactionResource;
 
 class Index extends Action
 {
@@ -52,5 +53,10 @@ class Index extends Action
         }
 
         return $query->where($where)->get();
+    }
+
+    public function jsonResponse($result, $request)
+    {
+        return TransactionResource::collection($result);
     }
 }
