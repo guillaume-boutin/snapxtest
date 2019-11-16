@@ -2,9 +2,10 @@ require('./bootstrap');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Hello from '@/components/Hello';
+// import Hello from '@/components/Hello';
+import Header from '@/components/partials/Header';
 
 ReactDOM.render(
-    <Hello />,
+    <Header />,
     document.getElementById("app")
 );
