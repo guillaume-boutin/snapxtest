@@ -1,0 +1,99 @@
+<?php
+
+namespace Tests\Feature\Actions\Transaction;
+
+use App\Company;
+use Carbon\Carbon;
+use DatabaseSeeder;
+use Tests\TestCase;
+use App\Transaction;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Actions\Transaction\Index as TransactionIndexAction;
+
+class IndexTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp() : void
+    {
+        parent::setUp();
+        app(DatabaseSeeder::class)->run();
+    }
+
+    public function test_it_fetches_all_transactions()
+    {
+        $results = (new TransactionIndexAction())->run();
+        
+        $this->assertEquals(
+            Transaction::count(),
+            $results->count()
+        );
+    }
+
+    public function test_it_fetches_transactions_for_a_company()
+    {
+        $company = Company::all()->random();
+
+        $transactions = Transaction::where('company_id', $company->id);
+        $results = (new TransactionIndexAction(['supplier' => $company->id]))->run();
+
+        $this->assertEquals(
+            $transactions->count(),
+            $results->count()
+        );
+    }
+
+    public function test_it_fetches_transactions_since_a_date_of_purchase()
+    {
+        $purchasedSince = "2019-01-15";
+        $transactions = Transaction::where('date_of_purchase', '>=', $purchasedSince);
+        $results = (new TransactionIndexAction(['purchased_since' => $purchasedSince]))->run();
+
+        $this->assertEquals(
+            $transactions->count(),
+            $results->count()
+        );
+    }
+
+    public function test_it_fetches_transactions_until_a_date_of_purchase()
+    {
+        $purchasedUntil = "2019-01-15";
+        $transactions = Transaction::where('date_of_purchase', '<=', $purchasedUntil);
+        $results = (new TransactionIndexAction(['purchased_until' => $purchasedUntil]))->run();
+
+        $this->assertEquals(
+            $transactions->count(),
+            $results->count()
+        );
+    }
+
+    public function test_it_fetches_transactions_for_multiple_parameters()
+    {
+        $query = Transaction::query();
+        $actionParams = [];
+
+        if (rand(0 , 1) > 0) {
+            $company = Company::all()->random();
+            $query->where('company_id', $company->id);
+            $actionParams['supplier'] = $company->id;
+        }
+
+        if (rand(0, 1) > 0) {
+            $query->where('date_of_purchase', '>=', "2019-01-04");
+            $actionParams['purchased_since'] = "2019-01-04";
+        }
+
+        if (rand(0, 1) > 0) {
+            $query->where('date_of_purchase', '<=', "2019-02-11");
+            $actionParams['purchased_until'] = "2019-02-11";
+        }
+
+        $results = (new TransactionIndexAction($actionParams))->run();
+
+        $this->assertEquals(
+            $query->count(),
+            $results->count()
+        );
+    }
+}
