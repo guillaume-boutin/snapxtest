@@ -28,7 +28,7 @@ class PaymentMethodSelector extends React.Component {
         return (
             <Form.Control
                 as="select"
-                value={this.props.value || ''}
+                value={this.props.value || '0'}
                 name={this.props.name}
                 onChange={this.onChange}
             >

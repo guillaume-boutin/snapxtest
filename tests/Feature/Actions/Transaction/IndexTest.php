@@ -24,7 +24,7 @@ class IndexTest extends AbstractActionTest
         $company = Company::all()->random();
 
         $transactions = Transaction::where('company_id', $company->id);
-        $results = (new TransactionIndexAction(['supplier' => $company->id]))->run();
+        $results = (new TransactionIndexAction(['company_id' => $company->id]))->run();
 
         $this->assertEquals(
             $transactions->count(),
@@ -64,7 +64,7 @@ class IndexTest extends AbstractActionTest
         if (rand(0 , 1) > 0) {
             $company = Company::all()->random();
             $query->where('company_id', $company->id);
-            $actionParams['supplier'] = $company->id;
+            $actionParams['company_id'] = $company->id;
         }
 
         if (rand(0, 1) > 0) {

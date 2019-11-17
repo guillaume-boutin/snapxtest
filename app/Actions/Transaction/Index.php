@@ -25,7 +25,12 @@ class Index extends Action
      */
     public function rules()
     {
-        return [];
+        return [
+            "company_id" => ["integer"],
+            "payment_method_id" => ["integer"],
+            "purchased_since" => ["date_format:Y-m-d"],
+            "purchased_until" => ["date_format:Y-m-d"],
+        ];
     }
 
     /**
@@ -39,8 +44,12 @@ class Index extends Action
             'company', 'payment_method'
         ]);
 
-        if ($supplier = $this->get('supplier')) {
-            $query->where('company_id', '=', $supplier);
+        if ($company_id = $this->get('company_id')) {
+            $query->where('company_id', '=', $company_id);
+        }
+
+        if ($payment_method_id = $this->get('payment_method_id')) {
+            $query->where('payment_method_id', '=', $payment_method_id);
         }
 
         if ($purchasedSince = $this->get('purchased_since')) {

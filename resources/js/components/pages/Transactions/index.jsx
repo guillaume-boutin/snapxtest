@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import DatePicker from '@/components/common/DatePicker';
+import CompanySelector from '@/components/common/CompanySelector';
 import PaymentMethodSelector from '@/components/common/PaymentMethodSelector';
 import TransactionsTable from '@/components/pages/Transactions/TransactionsTable';
 import EditTransactionModal from '@/components/pages/Transactions/EditTransactionModal';
@@ -18,13 +19,16 @@ class Transactions extends React.Component {
 
         this.state = {
             transactions: [],
+            companies: [],
             editingTransaction: null,
             deletingTransaction: null,
             searchForm: {
+                company_id: 0,
+                payment_method_id: 0,
                 purchased_since: moment().startOf('year').format('YYYY-MM-DD'),
-                purchased_until: moment().endOf('year').format('YYYY-MM-DD'),
-                payment_method: 0
-            }
+                purchased_until: moment().endOf('year').format('YYYY-MM-DD')
+            },
+            isSearchDisabled: true
         };
 
         this.onSearchChange = this.onSearchChange.bind(this);
@@ -38,14 +42,22 @@ class Transactions extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchTransactions()
+        this.fetchData()
     }
 
-    fetchTransactions () {
-        return api('transaction.index')
-            .then(({ data }) => {
-                this.setState({ transactions: data });
+    fetchData () {
+        this.setState({ isSearchDisabled: true });
+        return Promise.all([
+            api('transaction.index', this.state.searchForm),
+            api('company.index')
+        ])
+        .then(responses => {
+            this.setState({
+                transactions: responses[0].data,
+                companies: responses[1].data,
+                isSearchDisabled: false
             });
+        });
     }
 
     onSearchChange (e) {
@@ -55,7 +67,19 @@ class Transactions extends React.Component {
     }
 
     onSearchSubmit (e) {
+        if (this.state.isSearchDisabled) return;
+
+        this.setState({ isSearchDisabled: true });
+
         console.log(this.state.searchForm);
+
+        api('transaction.index', this.state.searchForm)
+        .then(({ data }) => {
+            this.setState({
+                transactions: data,
+                isSearchDisabled: false
+            });
+        })
     }
 
     onEditTransactionClick (id) {
@@ -141,12 +165,26 @@ class Transactions extends React.Component {
                     </Form.Group>
 
                     <Form.Group as={Row}>
+                        <Form.Label column>Supplier</Form.Label>
+
+                        <Col>
+                            <CompanySelector
+                                name="company_id"
+                                companies={this.state.companies}
+                                value={this.state.searchForm.company_id}
+                                onChange={this.onSearchChange}
+                                allowEmpty={true}
+                            />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row}>
                         <Form.Label column>Payment Method</Form.Label>
 
                         <Col>
                             <PaymentMethodSelector
-                                name="payment_method"
-                                value={this.state.searchForm.payment_method}
+                                name="payment_method_id"
+                                value={this.state.searchForm.payment_method_id}
                                 onChange={this.onSearchChange}
                                 allowEmpty={true}
                             />
@@ -155,7 +193,11 @@ class Transactions extends React.Component {
 
                     <Form.Group as={Row}>
                         <Col>
-                            <Button variant="primary" onClick={this.onSearchSubmit}>Search</Button>
+                            <Button
+                                disabled={this.state.isSearchDisabled}
+                                variant="primary"
+                                onClick={this.onSearchSubmit}
+                            >Search</Button>
                         </Col>
                     </Form.Group>
                 </Form>
