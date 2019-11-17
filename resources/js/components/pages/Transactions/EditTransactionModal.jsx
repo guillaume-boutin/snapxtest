@@ -22,7 +22,10 @@ class EditTransactionModal extends React.Component {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <EditTransactionForm transaction={this.props.transaction} />
+                    <EditTransactionForm
+                        transaction={this.props.transaction}
+                        edited={this.props.edited}
+                    />
                 </Modal.Body>
             </Modal>
         );

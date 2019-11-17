@@ -1,5 +1,6 @@
 import React from 'react';
 import api from '@/lib/api';
+import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 class EditTransactionForm extends React.Component {
@@ -10,17 +11,21 @@ class EditTransactionForm extends React.Component {
 
         this.onPaymentMethodsFetched = this.onPaymentMethodsFetched.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.onSuccessfulSubmit = this.onSuccessfulSubmit.bind(this);
     }
 
     computeState (props) {
         this.state = {
             paymentMethods: [],
             form: {
+                id: props.transaction.id,
                 subtotal: props.transaction.subtotal,
                 tps: props.transaction.tps,
                 tvq: props.transaction.tvq,
                 payment_method_id: props.transaction.payment_method.id
-            }
+            },
+            isEnabled: false
         };
     }
 
@@ -29,13 +34,27 @@ class EditTransactionForm extends React.Component {
     }
 
     onPaymentMethodsFetched ({ data }) {
-        this.setState({ paymentMethods: data });
+        this.setState({
+            paymentMethods: data,
+            isEnabled: true
+        });
     }
 
     onChange (e) {
         let { form } = this.state;
         form[e.target.name] = e.target.value;
         this.setState({ form });
+    }
+
+    onSubmit () {
+        if (!this.state.isEnabled) return;
+
+        api('transaction.update', this.state.form)
+        .then(this.onSuccessfulSubmit);
+    }
+
+    onSuccessfulSubmit({ data }) {
+        this.props.edited();
     }
 
     render () {
@@ -49,7 +68,7 @@ class EditTransactionForm extends React.Component {
                         name="subtotal"
                         value={this.state.form.subtotal}
                         min="0"
-                        max="999999999"
+                        max="999999999.99"
                         step="0.01"
                         onChange={this.onChange}
                     />
@@ -63,7 +82,7 @@ class EditTransactionForm extends React.Component {
                         name="tps"
                         value={this.state.form.tps}
                         min="0"
-                        max="999999999"
+                        max="999999999.99"
                         step="0.01"
                         onChange={this.onChange}
                     />
@@ -77,7 +96,7 @@ class EditTransactionForm extends React.Component {
                         name="tvq"
                         value={this.state.form.tvq}
                         min="0"
-                        max="999999999"
+                        max="999999999.99"
                         step="0.01"
                         onChange={this.onChange}
                     />
@@ -97,6 +116,10 @@ class EditTransactionForm extends React.Component {
                         ))}
                     </Form.Control>
                 </Form.Group>
+
+                <Button variant="primary" onClick={this.onSubmit} disabled={!this.state.isEnabled}>
+                    Submit
+                </Button>
             </Form>
         );
     }

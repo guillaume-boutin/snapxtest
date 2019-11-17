@@ -25,12 +25,12 @@ class Update extends Action
     public function rules()
     {
         return [
-            'company_id' => "exists:companies,id",
+            // 'company_id' => "exists:companies,id",
             'payment_method_id' => "exists:payment_methods,id",
             'subtotal' => "numeric|min:0.01|max:999999999.99",
             'tps' => "nullable|numeric|min:0.01|max:999999999.99",
             'tvq' => "nullable|numeric|min:0.01|max:999999999.99",
-            'date_of_purchase' => "date_format:Y-m-d"
+            // 'date_of_purchase' => "date_format:Y-m-d"
         ];
     }
 

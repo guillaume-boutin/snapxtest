@@ -14,6 +14,7 @@ class Transactions extends React.Component {
 
         this.onEditTransactionClick = this.onEditTransactionClick.bind(this);
         this.onEditTransactionClose = this.onEditTransactionClose.bind(this);
+        this.onTransactionEdited = this.onTransactionEdited.bind(this);
     }
 
     componentDidMount() {
@@ -33,6 +34,11 @@ class Transactions extends React.Component {
 
     onEditTransactionClose () {
         this.setState({ editingTransaction: null });
+    }
+
+    onTransactionEdited () {
+        this.setState({ editingTransaction: null });
+        this.fetchTransactions();
     }
 
     getTransaction(id) {
@@ -63,6 +69,7 @@ class Transactions extends React.Component {
 
                 <EditTransactionModal
                     transaction={this.state.editingTransaction}
+                    edited={this.onTransactionEdited}
                     close={this.onEditTransactionClose}
                 />
             </div>
