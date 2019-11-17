@@ -14,14 +14,19 @@ class PaymentMethodSeeder extends Seeder
     {
         PaymentMethod::create([
             'id' => PaymentMethod::CASH_ID,
+            'name' => 'Cash',
             'slug' => 'cash'
         ]);
+
         PaymentMethod::create([
             'id' => PaymentMethod::CREDIT_CARD_ID,
+            'name' => 'Credit Card',
             'slug' => 'credit-card'
         ]);
+        
         PaymentMethod::create([
             'id' => PaymentMethod::DEBIT_CARD_ID,
+            'name' => 'Debit Card',
             'slug' => 'dedit-card'
         ]);
     }
