@@ -71,9 +71,12 @@ class Transactions extends React.Component {
 
         this.setState({ isSearchDisabled: true });
 
-        console.log(this.state.searchForm);
+        let { searchForm } = this.state;
 
-        api('transaction.index', this.state.searchForm)
+        if (searchForm.company_id == 0) delete searchForm.company_id;
+        if (searchForm.payment_method_id == 0) delete searchForm.payment_method_id;
+
+        api('transaction.index', searchForm)
         .then(({ data }) => {
             this.setState({
                 transactions: data,
@@ -112,18 +115,6 @@ class Transactions extends React.Component {
         return this.state.transactions.find(item => item.id == id);
     }
 
-    tableItems () {
-        return this.state.transactions.map(t => ({
-            id: t.id,
-            supplier: t.company.name,
-            dateOfPurchase: t.date_of_purchase,
-            subtotal: t.subtotal,
-            tps: t.tps,
-            tvq: t.tvq,
-            paymentMethod: t.payment_method.name
-        }));
-    }
-
     render () {
         return (
             <Container>
@@ -132,12 +123,6 @@ class Transactions extends React.Component {
                         <h1>Transactions</h1>
                     </Col>
                 </Row>
-
-                {/* <Row>
-                    <Col>
-                        <h2>Search</h2>
-                    </Col>
-                </Row> */}
 
                 <Form>
                     <Form.Group as={Row}>
@@ -205,7 +190,7 @@ class Transactions extends React.Component {
                 <Row>
                     <Col>
                         <TransactionsTable
-                            items={this.tableItems()}
+                            items={this.state.transactions}
                             onEditTransactionClick={this.onEditTransactionClick}
                             onDeleteTransactionClick={this.onDeleteTransactionClick}
                         />

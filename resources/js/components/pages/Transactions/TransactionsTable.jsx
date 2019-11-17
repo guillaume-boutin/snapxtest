@@ -10,6 +10,41 @@ class TransactionsTable extends React.Component {
         this.onDeleteClick = this.onDeleteClick.bind(this);
     }
 
+    tableItems () {
+        return this.props.items.map(t => ({
+            id: t.id,
+            supplier: t.company.name,
+            dateOfPurchase: t.date_of_purchase,
+            subtotal: t.subtotal,
+            tps: t.tps,
+            tvq: t.tvq,
+            total: this.calculateTotal(t),
+            paymentMethod: t.payment_method.name
+        }));
+    }
+
+    calculateTotal (item) {
+        const subtotal = parseFloat(item.subtotal) || 0;
+        const tps = parseFloat(item.tps) || 0;
+        const tvq = parseFloat(item.tvq) || 0;
+
+        return this.floatToString(subtotal + tps + tvq);
+    }
+
+    sum (field) {
+        let sum = this.tableItems().reduce((sum, item) => {
+            let value = parseFloat(item[field]) || 0;
+            return sum + value;
+        }, 0);
+
+        return this.floatToString(sum);
+    }
+
+    floatToString(floatVal) {
+        let stringVal = Math.round(floatVal * 100).toString();
+        return stringVal.slice(0, -2) + '.' + stringVal.slice(-2);
+    }
+
     onEditClick (e) {
         const id = e.target.getAttribute('item-id');
         this.props.onEditTransactionClick(id);
@@ -35,6 +70,8 @@ class TransactionsTable extends React.Component {
 
                         <th>TVQ</th>
 
+                        <th>Total</th>
+
                         <th>Payment Method</th>
 
                         <th></th>
@@ -42,7 +79,7 @@ class TransactionsTable extends React.Component {
                 </thead>
 
                 <tbody>
-                    {this.props.items.map(item => (
+                    {this.tableItems().map(item => (
                         <tr key={item.id}>
                             <td>{item.supplier}</td>
 
@@ -53,6 +90,8 @@ class TransactionsTable extends React.Component {
                             <td>{item.tps || 'NO TAX'}</td>
 
                             <td>{item.tvq || 'NO TAX'}</td>
+
+                            <td>{item.total}</td>
 
                             <td>{item.paymentMethod}</td>
 
@@ -76,6 +115,25 @@ class TransactionsTable extends React.Component {
                             </td>
                         </tr>
                     ))}
+
+                    {this.tableItems().length ?
+                        <tr>
+                            <td><b>Total</b></td>
+
+                            <td></td>
+
+                            <td>{this.sum('subtotal')}</td>
+
+                            <td>{this.sum('tps')}</td>
+
+                            <td>{this.sum('tvq')}</td>
+
+                            <td>{this.sum('total')}</td>
+
+                            <td></td>
+
+                            <td></td>
+                        </tr> : null}
                 </tbody>
             </Table>
         );
