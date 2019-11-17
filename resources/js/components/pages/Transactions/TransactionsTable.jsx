@@ -7,11 +7,17 @@ class TransactionsTable extends React.Component {
         super(props);
 
         this.onEditClick = this.onEditClick.bind(this);
+        this.onDeleteClick = this.onDeleteClick.bind(this);
     }
 
-    onEditClick(e) {
+    onEditClick (e) {
         const id = e.target.getAttribute('item-id');
         this.props.onEditTransactionClick(id);
+    }
+
+    onDeleteClick (e) {
+        const id = e.target.getAttribute('item-id');
+        this.props.onDeleteTransactionClick(id);
     }
 
     render () {
@@ -59,8 +65,10 @@ class TransactionsTable extends React.Component {
                                 >Edit</Button>
 
                                 <Button
+                                    item-id={item.id}
                                     variant="danger"
                                     size="sm"
+                                    onClick={this.onDeleteClick}
                                     style={{
                                         marginLeft: "1em"
                                     }}

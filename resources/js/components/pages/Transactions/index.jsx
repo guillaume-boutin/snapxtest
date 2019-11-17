@@ -2,6 +2,7 @@ import React from 'react';
 import api from '@/lib/api';
 import TransactionsTable from '@/components/pages/Transactions/TransactionsTable';
 import EditTransactionModal from '@/components/pages/Transactions/EditTransactionModal';
+import DeleteTransactionModal from '@/components/pages/Transactions/DeleteTransactionModal';
 
 class Transactions extends React.Component {
     constructor (props) {
@@ -9,12 +10,16 @@ class Transactions extends React.Component {
 
         this.state = {
             transactions: [],
-            editingTransaction: null
+            editingTransaction: null,
+            deletingTransaction: null
         };
 
         this.onEditTransactionClick = this.onEditTransactionClick.bind(this);
         this.onEditTransactionClose = this.onEditTransactionClose.bind(this);
         this.onTransactionEdited = this.onTransactionEdited.bind(this);
+        this.onTransactionDeleted = this.onTransactionDeleted.bind(this);
+        this.onDeleteTransactionClick = this.onDeleteTransactionClick.bind(this);
+        this.onDeleteTransactionClose = this.onDeleteTransactionClose.bind(this);
     }
 
     componentDidMount() {
@@ -41,6 +46,19 @@ class Transactions extends React.Component {
         this.fetchTransactions();
     }
 
+    onDeleteTransactionClick (id) {
+        this.setState({ deletingTransaction: this.getTransaction(id) });
+    }
+
+    onTransactionDeleted () {
+        this.setState({ deletingTransaction: null });
+        this.fetchTransactions();
+    }
+
+    onDeleteTransactionClose () {
+        this.setState({ deletingTransaction: null });
+    }
+
     getTransaction(id) {
         return this.state.transactions.find(item => item.id == id);
     }
@@ -65,12 +83,19 @@ class Transactions extends React.Component {
                 <TransactionsTable
                     items={this.tableItems()}
                     onEditTransactionClick={this.onEditTransactionClick}
+                    onDeleteTransactionClick={this.onDeleteTransactionClick}
                 />
 
                 <EditTransactionModal
                     transaction={this.state.editingTransaction}
                     edited={this.onTransactionEdited}
                     close={this.onEditTransactionClose}
+                />
+
+                <DeleteTransactionModal
+                    transaction={this.state.deletingTransaction}
+                    deleted={this.onTransactionDeleted}
+                    close={this.onDeleteTransactionClose}
                 />
             </div>
         );

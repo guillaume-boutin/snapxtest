@@ -41,4 +41,9 @@ class Delete extends Action
 
         return $transaction->delete();
     }
+
+    public function jsonResponse($result)
+    {
+        return response()->json([], 204);
+    }
 }
