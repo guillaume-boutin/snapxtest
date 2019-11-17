@@ -11,6 +11,6 @@ class PaymentMethod extends Model
     const DEBIT_CARD_ID = 3;
 
     protected $fillable = [
-        'id', 'slug'
+        'id', 'name', 'slug'
     ];
 }

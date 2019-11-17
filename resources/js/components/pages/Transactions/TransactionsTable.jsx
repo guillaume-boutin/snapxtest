@@ -50,9 +50,9 @@ class TransactionsTable extends React.Component {
 
                             <td>{item.subtotal}</td>
 
-                            <td>{item.tps}</td>
+                            <td>{item.tps || 'NO TAX'}</td>
 
-                            <td>{item.tvq}</td>
+                            <td>{item.tvq || 'NO TAX'}</td>
 
                             <td>{item.paymentMethod}</td>
 

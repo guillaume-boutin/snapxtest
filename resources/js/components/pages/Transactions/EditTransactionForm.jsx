@@ -1,4 +1,5 @@
 import React from 'react';
+import _set from 'lodash/set';
 import api from '@/lib/api';
 import Button from 'react-bootstrap/Button';
 import DatePicker from '@/components/partials/DatePicker';
@@ -23,6 +24,9 @@ class EditTransactionForm extends React.Component {
             paymentMethods: [],
             form: {
                 id: props.transaction.id,
+                company: {
+                    name: props.transaction.company.name
+                },
                 date_of_purchase: props.transaction.date_of_purchase,
                 subtotal: props.transaction.subtotal,
                 tps: props.transaction.tps,
@@ -46,7 +50,7 @@ class EditTransactionForm extends React.Component {
 
     onChange (e) {
         let { form } = this.state;
-        form[e.target.name] = e.target.value;
+        _set(form, e.target.name, e.target.value);
         this.setState({ form });
     }
 
@@ -70,6 +74,17 @@ class EditTransactionForm extends React.Component {
     render () {
         return (
             <Form>
+                <Form.Group>
+                    <Form.Label>Supplier</Form.Label>
+
+                    <Form.Control
+                        type="text"
+                        name="company.name"
+                        value={this.state.form.company.name}
+                        onChange={this.onChange}
+                    />
+                </Form.Group>
+
                 <Form.Group>
                     <Form.Label>Date of purchase</Form.Label>
 

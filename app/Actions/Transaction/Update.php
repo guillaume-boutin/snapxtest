@@ -2,8 +2,11 @@
 
 namespace App\Actions\Transaction;
 
+use App\Company;
 use App\Transaction;
 use Lorisleiva\Actions\Action;
+use App\Actions\Company\Update as CompanyUpdateAction;
+use App\Actions\Company\Create as CompanyCreateAction;
 
 class Update extends Action
 {
@@ -25,12 +28,13 @@ class Update extends Action
     public function rules()
     {
         return [
-            // 'company_id' => "exists:companies,id",
-            'payment_method_id' => "exists:payment_methods,id",
-            'subtotal' => "numeric|min:0.01|max:999999999.99",
-            'tps' => "nullable|numeric|min:0.01|max:999999999.99",
-            'tvq' => "nullable|numeric|min:0.01|max:999999999.99",
-            // 'date_of_purchase' => "date_format:Y-m-d"
+            'id' => ['required', 'integer'],
+            'company.name' => ["string", "min:2", "max:255"],
+            'payment_method_id' => ["exists:payment_methods,id"],
+            'subtotal' => ["numeric", "min:0.01", "max:999999999.99"],
+            'tps' => ["nullable", "numeric", "min:0.01", "max:999999999.99"],
+            'tvq' => ["nullable", "numeric", "min:0.01", "max:999999999.99"],
+            'date_of_purchase' => ["date_format:Y-m-d"]
         ];
     }
 
@@ -46,9 +50,33 @@ class Update extends Action
             return null;
         }
 
+        if ($this->get('company.name')) {
+            $company = $this->updateCompany();
+            $transaction->company()->associate($company);
+        }
+
         $transaction->fill($this->all());
         $transaction->save();
 
         return $transaction;
+    }
+
+    protected function updateCompany() : Company
+    {
+        $companyName = $this->get('company.name');
+        $company = Company::where('name', $companyName)->first();
+
+        if (! $company) {
+            $company = (new CompanyCreateAction(['name' => $companyName]))->run();
+        }
+
+        if ($company->name != $companyName) {
+            $company = (new CompanyUpdateAction([
+                'id' => $company->id,
+                'name' => $company->name
+            ]))->run();
+        }
+
+        return $company;
     }
 }

@@ -14,32 +14,27 @@ class CompanySeeder extends Seeder
     {
         Company::create([
             'id' => 1,
-            'name' => 'Jean Coutu',
-            'slug' => 'jean-coutu'
+            'name' => 'Jean Coutu'
         ]);
 
         Company::create([
             'id' => 2,
-            'name' => 'Canadian Tire',
-            'slug' => 'canadian-tire'
+            'name' => 'Canadian Tire'
         ]);
 
         Company::create([
             'id' => 3,
-            'name' => 'Reno-Depot',
-            'slug' => 'reno-depot'
+            'name' => 'Reno-Depot'
         ]);
 
         Company::create([
             'id' => 4,
-            'name' => 'Assurance SSQ',
-            'slug' => 'assurance-ssq'
+            'name' => 'Assurance SSQ'
         ]);
         
         Company::create([
             'id' => 5,
-            'name' => 'Tim Hortons',
-            'slug' => 'tim-hortons'
+            'name' => 'Tim Hortons'
         ]);
     }
 }

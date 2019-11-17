@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Actions\Transaction;
 
+use App\Company;
 use App\Transaction;
 use Illuminate\Support\Arr;
 use Tests\Feature\Actions\AbstractActionTest;
@@ -31,6 +32,47 @@ class UpdateTest extends AbstractActionTest
         }
     }
 
+    public function test_it_can_update_its_parent_company()
+    {
+        $transaction = Transaction::all()->random();
+        $company = Company::where('id', '!=', $transaction->company_id)->get()->random();
+
+        $data = [
+            'id' => $transaction->id,
+            'company' => [
+                'name' => $company->name
+            ]
+        ];
+
+        $result = (new TransactionUpdateAction($data))->run();
+
+        $this->assertEquals($company->id, $result->company_id);
+    }
+
+    public function test_it_can_create_a_parent_company()
+    {
+        $transaction = Transaction::all()->random();
+        $newCompanyName = 'FooBarBaz inc';
+
+        $this->assertDatabaseMissing('companies', [
+            'name' => $newCompanyName
+        ]);
+
+        $data = [
+            'id' => $transaction->id,
+            'company' => [
+                'name' => $newCompanyName
+            ]
+        ];
+
+        $result = (new TransactionUpdateAction($data))->run();
+
+        $this->assertDatabaseHas('companies', [
+            'id' => $result->company_id,
+            'name' => $data['company']['name']
+        ]);
+    }
+
     public function test_it_wont_update_a_non_existing_transaction()
     {
         $data = [
@@ -48,7 +90,6 @@ class UpdateTest extends AbstractActionTest
         $transaction = Transaction::first();
 
         $data = [
-            'company_id' => 999999,
             'payment_method_id' => 888888,
             'subtotal' => 'foobar',
             'tps' => -1582.36,
