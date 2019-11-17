@@ -1,5 +1,10 @@
 import React from 'react';
 import api from '@/lib/api';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import DatePicker from '@/components/common/DatePicker';
 import TransactionsTable from '@/components/pages/Transactions/TransactionsTable';
 import EditTransactionModal from '@/components/pages/Transactions/EditTransactionModal';
 import DeleteTransactionModal from '@/components/pages/Transactions/DeleteTransactionModal';
@@ -77,14 +82,48 @@ class Transactions extends React.Component {
 
     render () {
         return (
-            <div>
-                <h1>Transactions</h1>
+            <Container>
+                <Row>
+                    <Col>
+                        <h1>Transactions</h1>
+                    </Col>
+                </Row>
 
-                <TransactionsTable
-                    items={this.tableItems()}
-                    onEditTransactionClick={this.onEditTransactionClick}
-                    onDeleteTransactionClick={this.onDeleteTransactionClick}
-                />
+                <Row>
+                    <Col>
+                        <h2>Search</h2>
+                    </Col>
+                </Row>
+
+                <Form>
+                    <Form.Group as={Row} >
+                        <Form.Label column>Purchased since</Form.Label>
+
+                        <Col>
+                            <DatePicker />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row} >
+                        <Form.Label column>Purchased until</Form.Label>
+
+                        <Col>
+                            <DatePicker />
+                        </Col>
+                    </Form.Group>
+
+
+                </Form>
+
+                <Row>
+                    <Col>
+                        <TransactionsTable
+                            items={this.tableItems()}
+                            onEditTransactionClick={this.onEditTransactionClick}
+                            onDeleteTransactionClick={this.onDeleteTransactionClick}
+                        />
+                    </Col>
+                </Row>
 
                 <EditTransactionModal
                     transaction={this.state.editingTransaction}
@@ -97,7 +136,7 @@ class Transactions extends React.Component {
                     deleted={this.onTransactionDeleted}
                     close={this.onDeleteTransactionClose}
                 />
-            </div>
+            </Container>
         );
     }
 };

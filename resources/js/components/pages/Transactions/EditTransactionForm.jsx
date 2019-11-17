@@ -2,9 +2,9 @@ import React from 'react';
 import _set from 'lodash/set';
 import api from '@/lib/api';
 import Button from 'react-bootstrap/Button';
-import DatePicker from '@/components/partials/DatePicker';
+import DatePicker from '@/components/common/DatePicker';
 import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
+import PaymentMethodSelector from '@/components/common/PaymentMethodSelector';
 
 class EditTransactionForm extends React.Component {
     constructor (props) {
@@ -12,7 +12,6 @@ class EditTransactionForm extends React.Component {
 
         this.computeState(props);
 
-        this.onPaymentMethodsFetched = this.onPaymentMethodsFetched.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.onDateChange = this.onDateChange.bind(this);
@@ -33,20 +32,20 @@ class EditTransactionForm extends React.Component {
                 tvq: props.transaction.tvq,
                 payment_method_id: props.transaction.payment_method.id
             },
-            isEnabled: false
+            isEnabled: true
         };
     }
 
-    componentDidMount () {
-        api('paymentMethod.index').then(this.onPaymentMethodsFetched);
-    }
+    // componentDidMount () {
+    //     api('paymentMethod.index').then(this.onPaymentMethodsFetched);
+    // }
 
-    onPaymentMethodsFetched ({ data }) {
-        this.setState({
-            paymentMethods: data,
-            isEnabled: true
-        });
-    }
+    // onPaymentMethodsFetched ({ data }) {
+    //     this.setState({
+    //         paymentMethods: data,
+    //         isEnabled: true
+    //     });
+    // }
 
     onChange (e) {
         let { form } = this.state;
@@ -138,8 +137,14 @@ class EditTransactionForm extends React.Component {
 
                 <Form.Group>
                     <Form.Label>Payment method</Form.Label>
+
+                        <PaymentMethodSelector
+                            name="payment_method_id"
+                            value={this.state.form.payment_method_id}
+                            onChange={this.onChange}
+                        />
                     
-                    <Form.Control
+                    {/* <Form.Control
                         as="select"
                         name="payment_method_id"
                         value={this.state.form.payment_method_id}
@@ -148,7 +153,7 @@ class EditTransactionForm extends React.Component {
                         {this.state.paymentMethods.map(pm => (
                             <option key={pm.id} value={pm.id}>{ pm.name }</option>
                         ))}
-                    </Form.Control>
+                    </Form.Control> */}
                 </Form.Group>
 
                 <Button variant="primary" onClick={this.onSubmit} disabled={!this.state.isEnabled}>
