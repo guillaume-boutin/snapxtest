@@ -16,6 +16,10 @@ class PaymentMethodSelector extends React.Component {
         ];
     }
 
+    allowEmpty () {
+        return this.props.allowEmpty || false;
+    }
+
     onChange (e) {
         this.props.onChange(e);
     }
@@ -24,10 +28,12 @@ class PaymentMethodSelector extends React.Component {
         return (
             <Form.Control
                 as="select"
-                value={this.props.value || null}
+                value={this.props.value || ''}
                 name={this.props.name}
                 onChange={this.onChange}
             >
+                { this.allowEmpty() ? <option value={'0'}></option> : null }
+
                 {this.paymentMethods().map(pm =>
                     <option key={pm.id} value={pm.id}>{pm.name}</option>
                 )}

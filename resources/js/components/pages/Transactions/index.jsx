@@ -1,10 +1,13 @@
 import React from 'react';
 import api from '@/lib/api';
+import moment from 'moment';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import DatePicker from '@/components/common/DatePicker';
+import PaymentMethodSelector from '@/components/common/PaymentMethodSelector';
 import TransactionsTable from '@/components/pages/Transactions/TransactionsTable';
 import EditTransactionModal from '@/components/pages/Transactions/EditTransactionModal';
 import DeleteTransactionModal from '@/components/pages/Transactions/DeleteTransactionModal';
@@ -16,9 +19,16 @@ class Transactions extends React.Component {
         this.state = {
             transactions: [],
             editingTransaction: null,
-            deletingTransaction: null
+            deletingTransaction: null,
+            searchForm: {
+                purchased_since: moment().startOf('year').format('YYYY-MM-DD'),
+                purchased_until: moment().endOf('year').format('YYYY-MM-DD'),
+                payment_method: 0
+            }
         };
 
+        this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSearchSubmit = this.onSearchSubmit.bind(this);
         this.onEditTransactionClick = this.onEditTransactionClick.bind(this);
         this.onEditTransactionClose = this.onEditTransactionClose.bind(this);
         this.onTransactionEdited = this.onTransactionEdited.bind(this);
@@ -36,6 +46,16 @@ class Transactions extends React.Component {
             .then(({ data }) => {
                 this.setState({ transactions: data });
             });
+    }
+
+    onSearchChange (e) {
+        let { searchForm } = this.state;
+        searchForm[e.target.name] = e.target.value;
+        this.setState({ searchForm });
+    }
+
+    onSearchSubmit (e) {
+        console.log(this.state.searchForm);
     }
 
     onEditTransactionClick (id) {
@@ -89,30 +109,55 @@ class Transactions extends React.Component {
                     </Col>
                 </Row>
 
-                <Row>
+                {/* <Row>
                     <Col>
                         <h2>Search</h2>
                     </Col>
-                </Row>
+                </Row> */}
 
                 <Form>
-                    <Form.Group as={Row} >
+                    <Form.Group as={Row}>
                         <Form.Label column>Purchased since</Form.Label>
 
                         <Col>
-                            <DatePicker />
+                            <DatePicker
+                                name="purchased_since"
+                                value={this.state.searchForm.purchased_since}
+                                onChange={this.onSearchChange}
+                            />
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} >
+                    <Form.Group as={Row}>
                         <Form.Label column>Purchased until</Form.Label>
 
                         <Col>
-                            <DatePicker />
+                            <DatePicker
+                                name="purchased_until"
+                                value={this.state.searchForm.purchased_until}
+                                onChange={this.onSearchChange}
+                            />
                         </Col>
                     </Form.Group>
 
+                    <Form.Group as={Row}>
+                        <Form.Label column>Payment Method</Form.Label>
 
+                        <Col>
+                            <PaymentMethodSelector
+                                name="payment_method"
+                                value={this.state.searchForm.payment_method}
+                                onChange={this.onSearchChange}
+                                allowEmpty={true}
+                            />
+                        </Col>
+                    </Form.Group>
+
+                    <Form.Group as={Row}>
+                        <Col>
+                            <Button variant="primary" onClick={this.onSearchSubmit}>Search</Button>
+                        </Col>
+                    </Form.Group>
                 </Form>
 
                 <Row>

@@ -35,7 +35,7 @@ class DatePicker extends React.Component {
     }
 
     days () {
-        const maxDay = this.maxDateOfMonth(this.state.form.month)
+        const maxDay = this.maxDateOfMonth(this.state.form)
         return _range(1, maxDay+1).map(day => this.stringify(day));
     }
 
@@ -48,8 +48,10 @@ class DatePicker extends React.Component {
         return _range(currentYear, 1990, -1).map(year => year.toString());
     }
 
-    maxDateOfMonth (month) {
-        if (month == '02') return 28;
+    maxDateOfMonth ({month, year}) {
+        if (month == '02') {
+            return year % 4 > 0 ? 28 : 29;
+        }
 
         if (['04', '06', '09', '11'].indexOf(month) > -1) return 30;
 
@@ -68,15 +70,20 @@ class DatePicker extends React.Component {
         let form = this.state.form;
         form[e.target.name] = e.target.value;
 
-        let maxDayOfMonth = this.maxDateOfMonth(form.month);
+        let maxDayOfMonth = this.maxDateOfMonth(form);
         form.day = form.day > maxDayOfMonth ? maxDayOfMonth.toString() : form.day;
 
         this.setState({ form }, self.emitChange());
     }
 
     emitChange () {
-        const date = this.state.form.year + '-' + this.state.form.month + '-' + this.state.form.day;
-        this.props.onChange(date);
+        const value = this.state.form.year + '-' + this.state.form.month + '-' + this.state.form.day;
+        this.props.onChange({
+            target: {
+                name: this.props.name,
+                value
+            }
+        });
     }
 
     render () {
