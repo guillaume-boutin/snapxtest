@@ -10,10 +10,10 @@ class Header extends React.Component {
     render() {
         return (
             <Navbar
-                className="component__Header"
                 bg="primary"
                 variant="dark"
                 expand="lg"
+                style={style}
             >
                 <Navbar.Brand href="#home">Snapx-Test</Navbar.Brand>
 
@@ -47,6 +47,10 @@ class Header extends React.Component {
             </Navbar>
         )
     }
+}
+
+const style = {
+    marginBottom: "1em"
 }
 
 export default Header;

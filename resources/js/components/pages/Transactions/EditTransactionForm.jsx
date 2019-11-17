@@ -1,7 +1,9 @@
 import React from 'react';
 import api from '@/lib/api';
 import Button from 'react-bootstrap/Button';
+import DatePicker from '@/components/partials/DatePicker';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 class EditTransactionForm extends React.Component {
     constructor (props) {
@@ -12,6 +14,7 @@ class EditTransactionForm extends React.Component {
         this.onPaymentMethodsFetched = this.onPaymentMethodsFetched.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onDateChange = this.onDateChange.bind(this);
         this.onSuccessfulSubmit = this.onSuccessfulSubmit.bind(this);
     }
 
@@ -20,6 +23,7 @@ class EditTransactionForm extends React.Component {
             paymentMethods: [],
             form: {
                 id: props.transaction.id,
+                date_of_purchase: props.transaction.date_of_purchase,
                 subtotal: props.transaction.subtotal,
                 tps: props.transaction.tps,
                 tvq: props.transaction.tvq,
@@ -46,6 +50,12 @@ class EditTransactionForm extends React.Component {
         this.setState({ form });
     }
 
+    onDateChange (date) {
+        let { form } = this.state;
+        form.date_of_purchase = date;
+        this.setState({ form })
+    }
+
     onSubmit () {
         if (!this.state.isEnabled) return;
 
@@ -60,6 +70,15 @@ class EditTransactionForm extends React.Component {
     render () {
         return (
             <Form>
+                <Form.Group>
+                    <Form.Label>Date of purchase</Form.Label>
+
+                    <DatePicker
+                        value={this.state.form.date_of_purchase}
+                        onChange={this.onDateChange}
+                    />
+                </Form.Group>
+
                 <Form.Group>
                     <Form.Label>Subtotal</Form.Label>
 
