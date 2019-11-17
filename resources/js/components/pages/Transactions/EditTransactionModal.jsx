@@ -1,6 +1,7 @@
 import React from 'react';
 import _get from 'lodash/get';
 import Modal from 'react-bootstrap/Modal';
+import EditTransactionForm from '@/components/pages/Transactions/EditTransactionForm';
 
 class EditTransactionModal extends React.Component {
     constructor (props) {
@@ -20,14 +21,14 @@ class EditTransactionModal extends React.Component {
 
     render () {
         return (
-            <Modal show={this.isVisible()} onHide={this.props.close}>
+            <Modal size="lg" show={this.isVisible()} onHide={this.props.close}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Transaction</Modal.Title>
-
-                    <Modal.Body>
-                        Form goes here
-                    </Modal.Body>
                 </Modal.Header>
+
+                <Modal.Body>
+                    <EditTransactionForm />
+                </Modal.Body>
             </Modal>
         );
     }
