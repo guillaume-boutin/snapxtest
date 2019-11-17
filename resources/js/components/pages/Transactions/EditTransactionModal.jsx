@@ -7,11 +7,6 @@ class EditTransactionModal extends React.Component {
     constructor (props) {
         super(props);
 
-        this.state = {
-            transaction: props.transaction,
-            close: props.close
-        }
-
         this.isVisible = this.isVisible.bind(this);
     }
 
@@ -27,7 +22,7 @@ class EditTransactionModal extends React.Component {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <EditTransactionForm />
+                    <EditTransactionForm transaction={this.props.transaction} />
                 </Modal.Body>
             </Modal>
         );

@@ -69,8 +69,9 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace('\App\Actions')
             ->group(function () {
-                require base_path('routes/api/index.php');
+                require base_path('routes/api/user.php');
                 require base_path('routes/api/transaction.php');
+                require base_path('routes/api/paymentMethod.php');
             });
     }
 }

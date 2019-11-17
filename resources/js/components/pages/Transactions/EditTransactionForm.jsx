@@ -1,35 +1,100 @@
 import React from 'react';
+import api from '@/lib/api';
 import Form from 'react-bootstrap/Form';
 
 class EditTransactionForm extends React.Component {
+    constructor (props) {
+        super(props);
+
+        this.computeState(props);
+
+        this.onPaymentMethodsFetched = this.onPaymentMethodsFetched.bind(this);
+        this.onChange = this.onChange.bind(this);
+    }
+
+    computeState (props) {
+        this.state = {
+            paymentMethods: [],
+            form: {
+                subtotal: props.transaction.subtotal,
+                tps: props.transaction.tps,
+                tvq: props.transaction.tvq,
+                payment_method_id: props.transaction.payment_method.id
+            }
+        };
+    }
+
+    componentDidMount () {
+        api('paymentMethod.index').then(this.onPaymentMethodsFetched);
+    }
+
+    onPaymentMethodsFetched ({ data }) {
+        this.setState({ paymentMethods: data });
+    }
+
+    onChange (e) {
+        let { form } = this.state;
+        form[e.target.name] = e.target.value;
+        this.setState({ form });
+    }
+
     render () {
         return (
             <Form>
                 <Form.Group>
                     <Form.Label>Subtotal</Form.Label>
 
-                    <Form.Control type="number" min="0" max="999999999" step="0.01" />
+                    <Form.Control
+                        type="number"
+                        name="subtotal"
+                        value={this.state.form.subtotal}
+                        min="0"
+                        max="999999999"
+                        step="0.01"
+                        onChange={this.onChange}
+                    />
                 </Form.Group>
 
                 <Form.Group>
                     <Form.Label>TPS</Form.Label>
                     
-                    <Form.Control type="number" min="0" max="999999999" step="0.01" />
+                    <Form.Control
+                        type="number"
+                        name="tps"
+                        value={this.state.form.tps}
+                        min="0"
+                        max="999999999"
+                        step="0.01"
+                        onChange={this.onChange}
+                    />
                 </Form.Group>
 
                 <Form.Group>
                     <Form.Label>TVQ</Form.Label>
                     
-                    <Form.Control type="number" min="0" max="999999999" step="0.01" />
+                    <Form.Control
+                        type="number"
+                        name="tvq"
+                        value={this.state.form.tvq}
+                        min="0"
+                        max="999999999"
+                        step="0.01"
+                        onChange={this.onChange}
+                    />
                 </Form.Group>
 
                 <Form.Group>
                     <Form.Label>Payment method</Form.Label>
                     
-                    <Form.Control as="select">
-                        <option value="1">Cash</option>
-                        <option value="1">CreditCard</option>
-                        <option value="1">DebitCard</option>
+                    <Form.Control
+                        as="select"
+                        name="payment_method_id"
+                        value={this.state.form.payment_method_id}
+                        onChange={this.onChange}
+                    >
+                        {this.state.paymentMethods.map(pm => (
+                            <option key={pm.id} value={pm.id}>{ pm.name }</option>
+                        ))}
                     </Form.Control>
                 </Form.Group>
             </Form>
