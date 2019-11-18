@@ -31,7 +31,7 @@ class Update extends Action
             'id' => ['required', 'integer'],
             'company.name' => ["string", "min:2", "max:255"],
             'payment_method_id' => ["exists:payment_methods,id"],
-            'subtotal' => ["numeric", "min:0.01", "max:999999999.99"],
+            'subtotal' => ["required", "numeric", "min:0.01", "max:999999999.99"],
             'tps' => ["nullable", "numeric", "min:0.01", "max:999999999.99"],
             'tvq' => ["nullable", "numeric", "min:0.01", "max:999999999.99"],
             'date_of_purchase' => ["date_format:Y-m-d"]
@@ -41,10 +41,11 @@ class Update extends Action
     public function messages()
     {
         return [
-            'company.name.string' => 'cannot be empty',
-            'company.name.min' => 'must have at least 2 characters',
-            'tps.min' => 'must be greater than 0.00',
-            'tvq.min' => 'must be greater than 0.00'
+            'company.name.string' => 'Cannot be empty.',
+            'company.name.min' => 'Must have at least 2 characters.',
+            'subtotal.min' => 'Must be greater than 0.00.',
+            'tps.min' => 'Must be greater than 0.00.',
+            'tvq.min' => 'Must be greater than 0.00.'
         ];
     }
 

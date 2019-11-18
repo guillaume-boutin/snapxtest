@@ -1,11 +1,12 @@
 import React from 'react';
+import api from '@/lib/api';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _isString from 'lodash/isString';
-import api from '@/lib/api';
-import Button from 'react-bootstrap/Button';
-import DatePicker from '@/components/common/DatePicker';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import ValidationErrors from '@/lib/ValidationErrors';
+import DatePicker from '@/components/common/DatePicker';
 import PaymentMethodSelector from '@/components/common/PaymentMethodSelector';
 
 class EditTransactionForm extends React.Component {
@@ -14,10 +15,11 @@ class EditTransactionForm extends React.Component {
 
         this.computeState(props);
 
+        this.isEnabled = this.isEnabled.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        // this.onDateChange = this.onDateChange.bind(this);
         this.onSuccessfulSubmit = this.onSuccessfulSubmit.bind(this);
+        this.onFailedSubmit = this.onFailedSubmit.bind(this);
     }
 
     computeState (props) {
@@ -30,7 +32,8 @@ class EditTransactionForm extends React.Component {
         this.state = {
             paymentMethods: [],
             form,
-            isEnabled: true
+            isLoading: false,
+            errors: new ValidationErrors()
         };
     }
 
@@ -46,20 +49,21 @@ class EditTransactionForm extends React.Component {
         ];
     }
 
-    onChange (e) {
-        let { form } = this.state;
-        _set(form, e.target.name, e.target.value);
-        this.setState({ form });
+    isEnabled () {
+        return ! this.state.isLoading && ! this.state.errors.any();
     }
 
-    // onDateChange (date) {
-    //     let { form } = this.state;
-    //     form.date_of_purchase = date;
-    //     this.setState({ form })
-    // }
+    onChange (e) {
+        let { form, errors } = this.state;
+        _set(form, e.target.name, e.target.value);
+
+        errors.clear(e.target.name);
+
+        this.setState({ form, errors });
+    }
 
     onSubmit () {
-        if (!this.state.isEnabled) return;
+        if (!this.isEnabled()) return;
 
         let { form } = this.state;
 
@@ -73,12 +77,25 @@ class EditTransactionForm extends React.Component {
             return true;
         });
 
+        form.id = this.props.transaction.id;
+
         api('transaction.update', form)
-        .then(this.onSuccessfulSubmit);
+        .then(this.onSuccessfulSubmit)
+        .catch(this.onFailedSubmit);
     }
 
     onSuccessfulSubmit({ data }) {
         this.props.edited();
+    }
+
+    onFailedSubmit(err) {
+        let { errors } = this.state;
+        errors.record(err);
+
+        this.setState({
+            errors,
+            isLoading: false
+        });
     }
 
     render () {
@@ -92,7 +109,12 @@ class EditTransactionForm extends React.Component {
                         name="company.name"
                         value={this.state.form.company.name}
                         onChange={this.onChange}
+                        isInvalid={this.state.errors.has('company.name')}
                     />
+
+                    <Form.Control.Feedback type="invalid">
+                        {this.state.errors.get('company.name')}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group>
@@ -116,7 +138,12 @@ class EditTransactionForm extends React.Component {
                         max="999999999.99"
                         step="0.01"
                         onChange={this.onChange}
+                        isInvalid={this.state.errors.has('subtotal')}
                     />
+
+                    <Form.Control.Feedback type="invalid">
+                        {this.state.errors.get('subtotal')}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group>
@@ -130,7 +157,12 @@ class EditTransactionForm extends React.Component {
                         max="999999999.99"
                         step="0.01"
                         onChange={this.onChange}
+                        isInvalid={this.state.errors.has('tps')}
                     />
+
+                    <Form.Control.Feedback type="invalid">
+                        {this.state.errors.get('tps')}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group>
@@ -144,7 +176,12 @@ class EditTransactionForm extends React.Component {
                         max="999999999.99"
                         step="0.01"
                         onChange={this.onChange}
+                        isInvalid={this.state.errors.has('tvq')}
                     />
+
+                    <Form.Control.Feedback type="invalid">
+                        {this.state.errors.get('tvq')}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group>
@@ -157,7 +194,11 @@ class EditTransactionForm extends React.Component {
                     />
                 </Form.Group>
 
-                <Button variant="primary" onClick={this.onSubmit} disabled={!this.state.isEnabled}>
+                <Button
+                    variant="primary"
+                    onClick={this.onSubmit}
+                    disabled={! this.isEnabled()}
+                >
                     Submit
                 </Button>
             </Form>

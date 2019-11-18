@@ -19,20 +19,12 @@ class TransactionsTable extends React.Component {
             subtotal: t.subtotal,
             tps: t.tps,
             tvq: t.tvq,
-            total: this.calculateTotal(t),
+            total: t.total,
             paymentMethod: t.payment_method.name
         }));
     }
 
-    calculateTotal (item) {
-        const subtotal = parseFloat(item.subtotal) || 0;
-        const tps = parseFloat(item.tps) || 0;
-        const tvq = parseFloat(item.tvq) || 0;
-
-        return this.floatToString(subtotal + tps + tvq);
-    }
-
-    sum (field) {
+    sumColumn (field) {
         let sum = this.tableItems().reduce((sum, item) => {
             let value = parseFloat(item[field]) || 0;
             return sum + value;
@@ -135,13 +127,13 @@ class TransactionsTable extends React.Component {
 
                             <td></td>
 
-                            <td>{this.sum('subtotal')}</td>
+                            <td>{this.sumColumn('subtotal')}</td>
 
-                            <td>{this.sum('tps')}</td>
+                            <td>{this.sumColumn('tps')}</td>
 
-                            <td>{this.sum('tvq')}</td>
+                            <td>{this.sumColumn('tvq')}</td>
 
-                            <td>{this.sum('total')}</td>
+                            <td>{this.sumColumn('total')}</td>
 
                             <td></td>
 
