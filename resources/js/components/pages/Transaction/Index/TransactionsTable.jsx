@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import history from '@/lib/history';
 
 class TransactionsTable extends React.Component {
     constructor (props) {
@@ -43,6 +44,11 @@ class TransactionsTable extends React.Component {
     floatToString(floatVal) {
         let stringVal = Math.round(floatVal * 100).toString();
         return stringVal.slice(0, -2) + '.' + stringVal.slice(-2);
+    }
+
+    onViewClick (e) {
+        const id = e.target.getAttribute('item-id');
+        history.push('/transactions/' + id);
     }
 
     onEditClick (e) {
@@ -98,9 +104,18 @@ class TransactionsTable extends React.Component {
                             <td>
                                 <Button
                                     item-id={item.id}
+                                    variant="info"
+                                    size="sm"
+                                    onClick={this.onViewClick}
+                                    style={{ marginLeft: "1em" }}
+                                >View</Button>
+
+                                <Button
+                                    item-id={item.id}
                                     variant="success"
                                     size="sm"
                                     onClick={this.onEditClick}
+                                    style={{ marginLeft: "1em" }}
                                 >Edit</Button>
 
                                 <Button
@@ -108,9 +123,7 @@ class TransactionsTable extends React.Component {
                                     variant="danger"
                                     size="sm"
                                     onClick={this.onDeleteClick}
-                                    style={{
-                                        marginLeft: "1em"
-                                    }}
+                                    style={{ marginLeft: "1em" }}
                                 >Delete</Button>
                             </td>
                         </tr>
