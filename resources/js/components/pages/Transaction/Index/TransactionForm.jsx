@@ -10,7 +10,7 @@ import ValidationErrors from '@/lib/ValidationErrors';
 import DatePicker from '@/components/common/DatePicker';
 import PaymentMethodSelector from '@/components/common/PaymentMethodSelector';
 
-class EditTransactionForm extends React.Component {
+class TransactionForm extends React.Component {
     constructor (props) {
         super(props);
 
@@ -29,7 +29,7 @@ class EditTransactionForm extends React.Component {
             company: {
                 name: _get(props, 'transaction.company.name', '')
             },
-            date_of_purchase: _get(props, 'transaction.company.name', moment().format("YYYY-MM-DD")),
+            date_of_purchase: _get(props, 'transaction.date_of_purchase', moment().format("YYYY-MM-DD")),
             subtotal: _get(props, 'transaction.subtotal', ''),
             tps: _get(props, 'transaction.tps', ''),
             tvq: _get(props, 'transaction.tvq', ''),
@@ -49,7 +49,7 @@ class EditTransactionForm extends React.Component {
     }
 
     isEdit () {
-        return _get(this.props.transaction.id, null);
+        return _get(this.props, 'transaction.id', null);
     }
 
     onChange (e) {
@@ -67,22 +67,22 @@ class EditTransactionForm extends React.Component {
         let { form } = this.state;
 
         ['company.name', 'subtotal', 'tps', 'tvq'].forEach(field => {
-            _set(form, field, trim(_get(form, field, '')));
-        })
+            _set(form, field, _get(form, field, '').trim());
+        });
 
-        let route = 'transaction.create'
+        let routeName = 'transaction.create'
         if (this.isEdit()) {
             form.id = this.props.transaction.id;
-            route = 'transaction.update'
+            routeName = 'transaction.update'
         }
 
-        api(route, form)
+        api(routeName, form)
         .then(this.onSuccessfulSubmit)
         .catch(this.onFailedSubmit);
     }
 
-    onSuccessfulSubmit({ data }) {
-        this.props.edited();
+    onSuccessfulSubmit() {
+        this.props.saved();
     }
 
     onFailedSubmit(err) {
@@ -203,4 +203,4 @@ class EditTransactionForm extends React.Component {
     }
 };
 
-export default EditTransactionForm;
+export default TransactionForm;
