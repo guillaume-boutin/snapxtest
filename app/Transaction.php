@@ -17,6 +17,12 @@ class Transaction extends Model
         'date_of_purchase'
     ];
 
+    protected $casts = [
+        'total' => 'string'
+    ];
+
+    protected $appends = ['total'];
+
     /**
      * @return BelongsTo
      */
@@ -31,5 +37,11 @@ class Transaction extends Model
     public function payment_method()
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function getTotalAttribute() : string
+    {
+        $sum = (string) round(($this->subtotal + $this->tps + $this->tvq) * 100);
+        return substr($sum, 0, -2) . '.' . substr($sum, -2);
     }
 }

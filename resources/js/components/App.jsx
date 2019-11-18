@@ -3,7 +3,8 @@ import { Route, Switch } from 'react-router-dom';
 // import Hello from '@/components/Hello';
 import MainLayout from '@/components/layouts/MainLayout';
 import Home from '@/components/pages/Home';
-import Transactions from '@/components/pages/Transactions';
+import TransactionIndex from '@/components/pages/Transaction/Index';
+import TransactionShow from '@/components/pages/Transaction/Show';
 import NotFound from '@/components/pages/NotFound';
 
 class App extends React.Component {
@@ -13,7 +14,9 @@ class App extends React.Component {
                 <Switch>
                     <MainLayout exact path="/" component={Home} />
 
-                    <MainLayout exact path="/transactions" component={Transactions} />
+                    <MainLayout exact path="/transactions" component={TransactionIndex} />
+
+                    <MainLayout path="/transactions/:id" component={TransactionShow} />
 
                     <Route path="/404" component={NotFound} />
 

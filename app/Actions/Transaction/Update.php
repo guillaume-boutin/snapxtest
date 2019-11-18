@@ -38,6 +38,16 @@ class Update extends Action
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'company.name.string' => 'cannot be empty',
+            'company.name.min' => 'must have at least 2 characters',
+            'tps.min' => 'must be greater than 0.00',
+            'tvq.min' => 'must be greater than 0.00'
+        ];
+    }
+
     /**
      * Execute the action and return a result.
      *

@@ -8,34 +8,11 @@ use App\Http\Resources\Transaction as TransactionResource;
 
 class Show extends Action
 {
-    /**
-     * Determine if the user is authorized to make this action.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function handle() : ?Transaction
     {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the action.
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [];
-    }
-
-    /**
-     * Execute the action and return a result.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        return Transaction::find($this->get('id'));
+        $transaction = Transaction::with('company', 'payment_method')->find($this->get('id'));
+        $transaction->total;
+        return $transaction;
     }
 
     public function jsonResponse($result)
