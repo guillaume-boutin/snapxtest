@@ -2,19 +2,20 @@
 
 namespace Tests\Feature\Actions\Transaction;
 
-use App\Actions\Transaction\Delete as TransactionDeleteAction;
+use App\Transaction;
 use Tests\Feature\Actions\AbstractActionTest;
+use App\Actions\Transaction\Delete as TransactionDeleteAction;
 
 class DeleteTest extends AbstractActionTest
 {
     public function test_it_deletes_a_transaction()
     {
-        $id = 1;
+        $transaction = Transaction::all()->random();
+        $id = $transaction->id;
         $this->assertDatabaseHas('transactions', compact('id'));
 
         $result = (new TransactionDeleteAction(compact('id')))->run();
 
-        $this->assertTrue($result);
         $this->assertDatabaseMissing('transactions', compact('id'));
     }
 
@@ -25,7 +26,6 @@ class DeleteTest extends AbstractActionTest
 
         $result = (new TransactionDeleteAction(compact('id')))->run();
 
-        $this->assertFalse($result);
         $this->assertDatabaseMissing('transactions', compact('id'));
     }
 }

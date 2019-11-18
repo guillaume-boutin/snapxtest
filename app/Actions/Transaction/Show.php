@@ -11,7 +11,6 @@ class Show extends Action
     public function handle() : ?Transaction
     {
         $transaction = Transaction::with('company', 'payment_method')->find($this->get('id'));
-        $transaction->total;
         return $transaction;
     }
 

@@ -28,11 +28,11 @@ class PaymentMethodSelector extends React.Component {
         return (
             <Form.Control
                 as="select"
-                value={this.props.value || '0'}
+                value={this.props.value || 0}
                 name={this.props.name}
                 onChange={this.onChange}
             >
-                { this.allowEmpty() ? <option value={'0'}></option> : null }
+                { this.allowEmpty() ? <option value={0}></option> : null }
 
                 {this.paymentMethods().map(pm =>
                     <option key={pm.id} value={pm.id}>{pm.name}</option>

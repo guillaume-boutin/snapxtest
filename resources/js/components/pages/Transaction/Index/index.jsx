@@ -9,8 +9,8 @@ import Container from 'react-bootstrap/Container';
 import DatePicker from '@/components/common/DatePicker';
 import CompanySelector from '@/components/common/CompanySelector';
 import PaymentMethodSelector from '@/components/common/PaymentMethodSelector';
+import TransactionModal from '@/components/pages/Transaction/Index/TransactionModal';
 import TransactionsTable from '@/components/pages/Transaction/Index/TransactionsTable';
-import EditTransactionModal from '@/components/pages/Transaction/Index/EditTransactionModal';
 import DeleteTransactionModal from '@/components/pages/Transaction/Index/DeleteTransactionModal';
 
 class TransactionIndex extends React.Component {
@@ -33,9 +33,10 @@ class TransactionIndex extends React.Component {
 
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
+        this.onCreateTransactionClick = this.onCreateTransactionClick.bind(this);
         this.onEditTransactionClick = this.onEditTransactionClick.bind(this);
         this.onEditTransactionClose = this.onEditTransactionClose.bind(this);
-        this.onTransactionEdited = this.onTransactionEdited.bind(this);
+        this.onTransactionSaved = this.onTransactionSaved.bind(this);
         this.onTransactionDeleted = this.onTransactionDeleted.bind(this);
         this.onDeleteTransactionClick = this.onDeleteTransactionClick.bind(this);
         this.onDeleteTransactionClose = this.onDeleteTransactionClose.bind(this);
@@ -85,6 +86,10 @@ class TransactionIndex extends React.Component {
         })
     }
 
+    onCreateTransactionClick () {
+        this.setState({ editingTransaction: {} });
+    }
+
     onEditTransactionClick (id) {
         this.setState({ editingTransaction: this.getTransaction(id) });
     }
@@ -93,7 +98,7 @@ class TransactionIndex extends React.Component {
         this.setState({ editingTransaction: null });
     }
 
-    onTransactionEdited () {
+    onTransactionSaved () {
         this.setState({ editingTransaction: null });
         this.fetchData();
     }
@@ -188,6 +193,21 @@ class TransactionIndex extends React.Component {
                 </Form>
 
                 <Row>
+                    <Col style={{
+                        display: "flex",
+                        justifyContent: 'flex-end',
+                        paddingBottom: '0.5em'
+                    }}>
+                        <Button
+                            variant="success"
+                            onClick={this.onCreateTransactionClick}
+                        >
+                            Create Transaction
+                        </Button>
+                    </Col>
+                </Row>
+
+                <Row>
                     <Col>
                         <TransactionsTable
                             items={this.state.transactions}
@@ -197,9 +217,9 @@ class TransactionIndex extends React.Component {
                     </Col>
                 </Row>
 
-                <EditTransactionModal
+                <TransactionModal
                     transaction={this.state.editingTransaction}
-                    edited={this.onTransactionEdited}
+                    saved={this.onTransactionSaved}
                     close={this.onEditTransactionClose}
                 />
 

@@ -45,6 +45,7 @@ class UpdateTest extends AbstractActionTest
         ];
 
         $result = (new TransactionUpdateAction($data))->run();
+        
 
         $this->assertEquals($company->id, $result->company_id);
     }
